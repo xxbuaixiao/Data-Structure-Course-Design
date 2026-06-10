@@ -23,7 +23,7 @@
 
 using namespace std;
 
-// ==================== 单链表子菜单 ====================
+// 单链表子菜单
 // 提供链表的基本操作：创建、插入、删除、查找、显示
 // 同时集成通讯录功能作为链表应用
 void linkedListMenu() {
@@ -53,14 +53,14 @@ void linkedListMenu() {
             cin >> pos;
             cout << "请输入插入值: ";
             cin >> val;
-            list.insert(pos, val);
+            list.insert(pos-1, val);
             break;
         }
         case 3: {
             int pos;
             cout << "请输入删除位置: ";
             cin >> pos;
-            list.remove(pos);
+            list.remove(pos-1);
             break;
         }
         case 4: {
@@ -69,7 +69,7 @@ void linkedListMenu() {
             cin >> val;
             int index = list.find(val);
             if (index != -1) {
-                cout << "找到元素，位置为: " << index << endl;
+                cout << "找到元素，位置为: " << index+1 << endl;
             }
             else {
                 cout << "未找到元素！" << endl;
@@ -96,9 +96,9 @@ void linkedListMenu() {
     } while (choice != 7);
 }
 
-// ==================== 栈子菜单 ====================
+// 栈子菜单 
 // 提供栈的基本操作：进栈、出栈、取栈顶、显示
-// 同时集成表达式求值功能（中缀转后缀表达式计算）
+// 集成表达式求值功能（中缀转后缀表达式计算）
 void stackMenu() {
     Stack<int> stack;
     int choice;
@@ -144,8 +144,12 @@ void stackMenu() {
             string expression;
             cout << "请输入中缀表达式（仅支持+、-、*、/和括号）: ";
             cin >> expression;
-            double result = ExpressionEvaluator::evaluateExpression(expression);
-            cout << "计算结果: " << result << endl;
+            bool a=true;
+            double result = ExpressionEvaluator::evaluateExpression(expression,a);
+            if (a)
+            {
+                cout << "计算结果: " << result << endl;
+            }
             break;
         }
         case 6: {
@@ -159,7 +163,7 @@ void stackMenu() {
     } while (choice != 6);
 }
 
-// ==================== 数组/矩阵子菜单 ====================
+// 数组/矩阵子菜单 
 // 提供矩阵的基本操作：创建、显示、矩阵乘法
 void arrayMenu() {
     Matrix mat1, mat2;
