@@ -1,24 +1,6 @@
-﻿/*
- * Array.cpp - 矩阵类（Matrix）实现
- *
- * 功能说明：
- *   实现二维矩阵的创建、显示、乘法运算等基本操作。
- *   矩阵存储方式：动态二维数组（int**），支持任意行列大小。
- *
- * 主要操作：
- *   - 构造函数：默认构造 / 指定行列构造
- *   - 析构函数：释放动态分配的内存
- *   - create()：手动输入创建矩阵
- *   - display()：打印矩阵内容
- *   - multiply()：矩阵乘法（A(m×n) * B(n×p) = C(m×p)）
- *   - getElement/setElement：单个元素的读写
- */
+﻿#include "Array.h"
 
-#include "Array.h"
-
-// ==================== 构造函数 ====================
-
-// 默认构造函数：初始化为空矩阵
+// 默认构造函数
 Matrix::Matrix() : data(nullptr), rows(0), cols(0) {}
 
 // 带参数构造函数：分配 rows×cols 的二维数组并初始化为 0
@@ -29,19 +11,17 @@ Matrix::Matrix(int r, int c) : rows(r), cols(c) {
     }
 }
 
-// ==================== 析构函数 ====================
-// 释放所有动态分配的行数组和列指针数组
+// 析构函数
 Matrix::~Matrix() {
     if (data != nullptr) {
         for (int i = 0; i < rows; i++) {
-            delete[] data[i];
+            delete [] data[i];
         }
         delete[] data;
     }
 }
 
-// ==================== 创建矩阵 ====================
-// 先释放旧数据，再提示用户输入行数、列数及各元素值
+// 创建矩阵:先释放旧数据，再创建
 void Matrix::create() {
     if (data != nullptr) {
         for (int i = 0; i < rows; i++) {
@@ -71,8 +51,7 @@ void Matrix::create() {
     cout << "矩阵创建成功！" << endl;
 }
 
-// ==================== 显示矩阵 ====================
-// 按行输出矩阵所有元素，空矩阵给出提示
+// 显示矩阵
 void Matrix::display() const {
     if (data == nullptr) {
         cout << "矩阵为空！" << endl;
@@ -92,13 +71,13 @@ void Matrix::display() const {
 // 计算 this × other，结果矩阵大小为 rows × other.cols
 // 时间复杂度：O(rows * other.cols * cols)
 // 乘法条件：this 的列数(cols) 必须等于 other 的行数(rows)
-Matrix Matrix::multiply(const Matrix& other) const {
+void  Matrix::multiply(const Matrix& other) const {
     if (cols != other.rows) {
         cout << "矩阵乘法失败：第一个矩阵的列数必须等于第二个矩阵的行数！" << endl;
-        return Matrix();
+        return ;
     }
 
-    Matrix result(rows, other.cols);
+    Matrix result(rows, other.cols);        //可是这句话执行完result就被删了
 
     for (int i = 0; i < rows; i++) {
         for (int j = 0; j < other.cols; j++) {
@@ -109,7 +88,13 @@ Matrix Matrix::multiply(const Matrix& other) const {
         }
     }
 
-    return result;
+    if (result.getRows() > 0) {
+        cout << "乘法结果:" << endl;
+        result.display();
+    }
+
+
+    return ;
 }
 
 // ==================== 辅助方法 ====================
