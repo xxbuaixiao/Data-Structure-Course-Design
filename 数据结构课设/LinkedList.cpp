@@ -11,24 +11,37 @@
     // 清空链表：释放所有节点内存，重置头指针和长度
     template <typename T>
     void LinkedList<T>::clear() {
-        Node<T>* current = head;  // 从链表头节点开始遍历
+        Node<T>* current = head;  
         while (current != nullptr) {
-            Node<T>* temp = current;  // 保存当前要删除的节点
-            current = current->next; // 指针后移
-            delete temp;             // 释放节点内存
+            Node<T>* temp = current;  
+            current = current->next; 
+            delete temp;             
         }
-        head = nullptr;  // 头指针置空
-        size = 0;        // 链表长度归零
+        head = nullptr;  
+        size = 0;        
     }
 
     // 创建链表：先清空原有数据，再手动输入元素创建新链表
     template <typename T>
     void LinkedList<T>::create() {
-        clear();  // 先清空链表
+        clear();  
         int n;
         cout << "请输入链表元素个数: ";
         cin >> n;
-        if (n <= 0) return;  // 元素个数非法，直接返回
+        //确保输入正确
+        while (1) {
+            if (n <= 0 || !cin) {
+                cin.clear();
+                cin.ignore(10000, '\n');        //清空缓冲区里的垃圾字符
+                system("cls");
+                cout << "元素输入不合法,重新输入" << endl;
+                cin >> n;
+            }
+            else
+            {
+                break;
+            }
+        }
 
         cout << "请输入" << n << "个元素: ";
         for (int i = 0; i < n; i++) {
@@ -50,20 +63,19 @@
 
         Node<T>* newNode = new Node<T>(val);  // 创建新节点
 
-        if (pos == 0) {       // 插入到链表头部
+        if (pos == 0) {       
             newNode->next = head;
             head = newNode;
         }
-        else {                // 插入到中间或尾部
+        else {                
             Node<T>* current = head;
-            // 找到待插入位置的前一个节点
             for (int i = 0; i < pos - 1; i++) {
                 current = current->next;
             }
             newNode->next = current->next;
             current->next = newNode;
         }
-        size++;  // 链表长度+1
+        size++; 
         cout << "插入成功！" << endl;
     }
 
@@ -77,21 +89,20 @@
         }
 
         Node<T>* temp;
-        if (pos == 0) {       // 删除头节点
+        if (pos == 0) {       
             temp = head;
             head = head->next;
         }
-        else {                // 删除中间或尾节点
+        else {               
             Node<T>* current = head;
-            // 找到待删除节点的前一个节点
             for (int i = 0; i < pos - 1; i++) {
                 current = current->next;
             }
             temp = current->next;
             current->next = temp->next;
         }
-        delete temp;   // 释放节点内存
-        size--;        // 链表长度-1
+        delete temp;   
+        size--;        
         cout << "删除成功！" << endl;
     }
 
@@ -100,15 +111,14 @@
     int LinkedList<T>::find(const T& val) {
         Node<T>* current = head;
         int index = 0;
-        // 遍历整个链表
         while (current != nullptr) {
             if (current->data == val) {
-                return index;  // 找到元素，返回下标
+                return index;  
             }
             current = current->next;
             index++;
         }
-        return -1;  // 遍历结束未找到，返回-1
+        return -1; 
     }
 
     // 遍历输出链表所有元素
@@ -121,7 +131,6 @@
 
         Node<T>* current = head;
         cout << "链表元素: ";
-        // 从头节点开始依次输出
         while (current != nullptr) {
             cout << current->data << " ";
             current = current->next;

@@ -67,10 +67,7 @@ void Matrix::display() const {
     }
 }
 
-// ==================== 矩阵乘法 ====================
-// 计算 this × other，结果矩阵大小为 rows × other.cols
-// 时间复杂度：O(rows * other.cols * cols)
-// 乘法条件：this 的列数(cols) 必须等于 other 的行数(rows)
+// 矩阵乘法
 void  Matrix::multiply(const Matrix& other) const {
     if (cols != other.rows) {
         cout << "矩阵乘法失败：第一个矩阵的列数必须等于第二个矩阵的行数！" << endl;
@@ -96,8 +93,6 @@ void  Matrix::multiply(const Matrix& other) const {
 
     return ;
 }
-
-// ==================== 辅助方法 ====================
 
 // 获取行数
 int Matrix::getRows() const {

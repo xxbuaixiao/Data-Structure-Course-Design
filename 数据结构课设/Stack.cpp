@@ -1,24 +1,10 @@
-﻿/*
- * Stack.cpp - 栈模板与表达式求值实现
- *
- * 功能说明：
- *   1. Stack<T> 模板类：基于数组实现的顺序栈
- *      - 支持 push/pop/getTop 等基本操作
- *      - 固定最大容量 MAX_SIZE=100
- *   2. ExpressionEvaluator 类：基于栈的表达式求值器
- *      - 中缀表达式 → 后缀表达式（逆波兰表达式）
- *      - 后缀表达式求值（支持 +, -, *, /）
- */
-
-#include "Stack.h"
-
-// ==================== Stack 模板类 ====================
+﻿#include "Stack.h"
 
 // 构造函数：初始化栈顶指针为 -1（表示空栈）
 template <typename T>
 Stack<T>::Stack() : top(-1) {}
 
-// 析构函数（数组在栈上分配，无需手动释放）
+
 template <typename T>
 Stack<T>::~Stack() {}
 
@@ -55,6 +41,12 @@ bool Stack<T>::getTop(T& val) {
     return true;
 }
 
+template<typename T>
+int Stack<T>::Top()
+{
+    return top;
+}
+
 // 判空：栈顶指针为 -1 则为空
 template <typename T>
 bool Stack<T>::isEmpty() const {
@@ -81,7 +73,7 @@ void Stack<T>::display() {
     cout << endl;
 }
 
-// ==================== ExpressionEvaluator 类 ====================
+//ExpressionEvaluator 类
 
 // 运算符优先级：+/- 为 1，* / 为 2，其他为 0
 int ExpressionEvaluator::precedence(char op) {
@@ -90,14 +82,8 @@ int ExpressionEvaluator::precedence(char op) {
     return 0;
 }
 
-// 中缀表达式转后缀表达式（逆波兰表达式）：
-// 算法：遍历中缀表达式每个字符
-//   操作数（数字/小数点）→ 直接加入后缀
-//   左括号 '(' → 入栈
-//   右括号 ')' → 弹栈直到遇到 '('
-//   运算符 → 弹栈所有优先级 ≥ 当前运算符的栈顶，再入栈
-//   最后弹空运算符栈
-string ExpressionEvaluator::infixToPostfix(const string& infix) {
+// 中缀转后缀：
+string ExpressionEvaluator::infixToPostfix(const string& infix, bool& a) {
     Stack<char> opStack;
     string postfix;
 
@@ -114,7 +100,16 @@ string ExpressionEvaluator::infixToPostfix(const string& infix) {
                 opStack.pop(op);
                 postfix += op;
             }
-            opStack.pop(op);
+            //补充一个括号对应
+            if (!opStack.isEmpty() && opStack.getTop(op) && op == '(') {
+                opStack.pop(op); 
+            }
+            else {
+                
+                cout << "表达式错误：右括号没有匹配的左括号！" << endl;
+                a = 0;
+                return ""; 
+            }
         }
         else {
             char topOp;
@@ -126,21 +121,24 @@ string ExpressionEvaluator::infixToPostfix(const string& infix) {
         }
     }
 
+    // 把栈里剩下的运算符弹出来
+    char op;
     while (!opStack.isEmpty()) {
-        char op;
+        opStack.getTop(op);
+        if (op == '(') {
+            cout << "错误：有未闭合的左括号！" << endl;
+            a = 0;
+            return "";
+        }
         opStack.pop(op);
         postfix += op;
     }
-
     return postfix;
 }
 
-// 后缀表达式求值：
-// 算法：遍历后缀表达式
-//   操作数 → 入栈
-//   运算符 → 弹出两个操作数，计算后将结果压回栈
-//   最后栈顶即为结果
+// 后缀求值：
 double ExpressionEvaluator::evaluatePostfix(const string& postfix) {
+
     Stack<double> numStack;
 
     for (char c : postfix) {
@@ -172,10 +170,19 @@ double ExpressionEvaluator::evaluatePostfix(const string& postfix) {
 }
 
 // 表达式求值主函数：中缀 → 后缀 → 求值
-double ExpressionEvaluator::evaluateExpression(const string& infix) {
-    string postfix = infixToPostfix(infix);
-    cout << "后缀表达式: " << postfix << endl;
-    return evaluatePostfix(postfix);
+double ExpressionEvaluator::evaluateExpression(const string& infix,bool& a) {
+    string postfix = infixToPostfix(infix,a);
+    if (a)
+    {
+        cout << "后缀表达式: " << postfix << endl;
+        return evaluatePostfix(postfix);
+    }
+    else
+    {
+        return 0;
+    }
+   
+   
 }
 
 // 显式实例化模板，确保链接器能找到这些类型的实现

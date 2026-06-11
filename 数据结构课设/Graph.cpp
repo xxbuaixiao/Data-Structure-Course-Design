@@ -1,24 +1,7 @@
-﻿/*
- * Graph.cpp - 图数据结构与图算法实现
- *
- * 功能说明：
- *   使用邻接矩阵存储图，支持有向/无向、带权/不带权四种类型。
- *
- * 包含算法：
- *   - 图的创建与显示
- *   - DFS（深度优先搜索）遍历
- *   - BFS（广度优先搜索）遍历
- *   - 拓扑排序（Kahn算法，基于DFS）
- *   - Kruskal 最小生成树（并查集 + 边排序）
- *   - Dijkstra 最短路径（贪心算法）
- *   - 关键路径（AOE网，拓扑序 + ve/vl）
- */
+﻿#include "Graph.h"
+#include "Graph.h" 
 
-#include "Graph.h"
-#include "Graph.h"  // 重复包含（无影响，由头文件保护宏处理）
-
-// ==================== 构造函数 ====================
-// 初始化所有顶点为未访问，邻接矩阵全部置 0
+// 构造函数
 Graph::Graph() : vertexCount(0), directed(false), weighted(false) {
     for (int i = 0; i < MAX_VERTEX; i++) {
         visited[i] = false;
@@ -28,9 +11,8 @@ Graph::Graph() : vertexCount(0), directed(false), weighted(false) {
     }
 }
 
-// ==================== 图的创建 ====================
+// 图的创建
 // 参数：isDirected(是否有向), isWeighted(是否带权)
-// 输入顶点数、边数及各边信息，构建邻接矩阵
 void Graph::createGraph(bool isDirected, bool isWeighted) {
     directed = isDirected;
     weighted = isWeighted;
@@ -64,8 +46,7 @@ void Graph::createGraph(bool isDirected, bool isWeighted) {
     cout << "图创建成功！" << endl;
 }
 
-// ==================== 显示邻接矩阵 ====================
-// 带权图中不可达边显示为 "INF"
+// 显示邻接矩阵
 void Graph::displayMatrix() const {
     cout << "邻接矩阵:" << endl;
     for (int i = 0; i < vertexCount; i++) {
@@ -81,7 +62,6 @@ void Graph::displayMatrix() const {
     }
 }
 
-// ==================== DFS 深度优先搜索 ====================
 
 // DFS 递归辅助函数：访问顶点 v，然后递归访问所有未访问的邻接顶点
 void Graph::dfsUtil(int v) {
@@ -97,7 +77,7 @@ void Graph::dfsUtil(int v) {
     }
 }
 
-// DFS 主函数：重置访问标记，对每个未访问顶点调用 dfsUtil
+// DFS 接口
 void Graph::dfs() {
     for (int i = 0; i < vertexCount; i++) {
         visited[i] = false;
@@ -111,8 +91,7 @@ void Graph::dfs() {
     cout << endl;
 }
 
-// ==================== BFS 广度优先搜索 ====================
-// 使用队列实现：访问顶点 → 将其未访问邻接点入队 → 循环
+// 广度优先搜索，使用队列实现
 void Graph::bfs() {
     for (int i = 0; i < vertexCount; i++) {
         visited[i] = false;
@@ -145,9 +124,7 @@ void Graph::bfs() {
     cout << endl;
 }
 
-// ==================== 拓扑排序 ====================
-
-// 拓扑排序 DFS 辅助：先递归访问所有后继，再将当前顶点入栈
+// 拓扑排序
 void Graph::topologicalSortUtil(int v, stack<int>& st) {
     visited[v] = true;
 
@@ -159,8 +136,7 @@ void Graph::topologicalSortUtil(int v, stack<int>& st) {
     st.push(v);
 }
 
-// 拓扑排序主函数：仅适用于有向无环图(DAG)
-// 使用 DFS + 栈实现，结果从栈顶到栈底即为一个拓扑序列
+// 拓扑排序接口
 void Graph::topologicalSort() {
     if (!directed) {
         cout << "拓扑排序只适用于有向图！" << endl;
@@ -187,8 +163,7 @@ void Graph::topologicalSort() {
     cout << endl;
 }
 
-// ==================== 并查集（Kruskal 辅助） ====================
-
+// 并查集（Kruskal 辅助） 
 // 查找：带路径压缩的查找根节点
 int Graph::find(int parent[], int i) {
     if (parent[i] == i) {

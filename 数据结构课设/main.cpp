@@ -198,11 +198,7 @@ void arrayMenu() {
             break;
         }
         case 5: {
-            Matrix result = mat1.multiply(mat2);
-            if (result.getRows() > 0) {
-                cout << "乘法结果:" << endl;
-                result.display();
-            }
+            mat1.multiply(mat2);
             break;
         }
         case 6: {
@@ -216,9 +212,8 @@ void arrayMenu() {
     } while (choice != 6);
 }
 
-// ==================== 二叉树子菜单 ====================
-// 提供二叉树的基本操作：创建（先序）、三种遍历、统计叶子数、计算深度、查找双亲/兄弟
-// 同时集成 Huffman 编码功能
+// 二叉树子菜单
+// 提供二叉树的基本操作：创建（先序）、三种遍历、统计叶子数、计算深度、查找双亲/兄弟并且集成 Huffman 编码功能
 void binaryTreeMenu() {
     BinaryTree tree;
     HuffmanTree huffman;
@@ -319,9 +314,7 @@ void binaryTreeMenu() {
     } while (choice != 10);
 }
 
-// ==================== 图子菜单 ====================
-// 提供图的创建（无向图/有向图/无向网/有向网）和多种图算法：
-//   DFS/BFS遍历、拓扑排序、Kruskal最小生成树、Dijkstra最短路径、关键路径
+// 图子菜单
 void graphMenu() {
     Graph graph;
     int choice;
@@ -330,8 +323,8 @@ void graphMenu() {
         cout << "\n=== 图子菜单 ===" << endl;
         cout << "1. 创建无向图" << endl;
         cout << "2. 创建有向图" << endl;
-        cout << "3. 创建无向网" << endl;
-        cout << "4. 创建有向网" << endl;
+        cout << "3. 创建无向网(无向带权)" << endl;
+        cout << "4. 创建有向网(有向带权)" << endl;
         cout << "5. 显示邻接矩阵" << endl;
         cout << "6. DFS遍历" << endl;
         cout << "7. BFS遍历" << endl;
@@ -402,8 +395,7 @@ void graphMenu() {
     } while (choice != 12);
 }
 
-// ==================== 主菜单 ====================
-// 提供六大数据结构模块的入口，用户选择后进入对应子菜单
+// 主菜单
 void mainMenu() {
     int choice;
 

@@ -1,29 +1,12 @@
-/*
- * BinaryTree.cpp - 二叉树与 Huffman 树实现
- *
- * 功能说明：
- *   1. BinaryTree 类：二叉树的创建、遍历、统计等操作
- *      - 支持先序、中序、后序三种递归遍历
- *      - 统计叶子节点数、计算树深度
- *      - 查找指定节点的双亲/兄弟节点
- *   2. HuffmanTree 类：Huffman 编码树的构建和编码生成
- *      - 根据字符频率构建 Huffman 树
- *      - 生成并输出各字符的 Huffman 编码
- */
-
 #include "BinaryTree.h"
 
-// ==================== BinaryTree 类 ====================
-
-// 构造函数：初始化根节点为空
+// BinaryTree 类
 BinaryTree::BinaryTree() : root(nullptr) {}
-
-// 析构函数：递归销毁整棵树，释放所有节点
 BinaryTree::~BinaryTree() {
     destroy(root);
 }
 
-// 递归销毁子树：后序遍历方式释放所有节点内存
+// 递归销毁子树
 void BinaryTree::destroy(BTNode* node) {
     if (node != nullptr) {
         destroy(node->left);
@@ -33,8 +16,6 @@ void BinaryTree::destroy(BTNode* node) {
 }
 
 // 先序方式递归创建二叉树
-// 用户输入节点值，输入 '#' 表示空节点
-// 返回：新创建的子树根节点
 BTNode* BinaryTree::createTree() {
     char ch;
     cout << "请输入节点值（输入'#'表示空节点）: ";
@@ -56,9 +37,8 @@ void BinaryTree::setRoot(BTNode* node) {
     root = node;
 }
 
-// ==================== 遍历算法 ====================
-
-// 先序遍历（递归）：根 → 左子树 → 右子树
+// 遍历
+// 先序遍历
 void BinaryTree::preOrder(BTNode* node) {
     if (node != nullptr) {
         cout << node->data << " ";
@@ -73,7 +53,7 @@ void BinaryTree::preOrderTraversal() {
     cout << endl;
 }
 
-// 中序遍历（递归）：左子树 → 根 → 右子树
+// 中序遍历
 void BinaryTree::inOrder(BTNode* node) {
     if (node != nullptr) {
         inOrder(node->left);
@@ -88,7 +68,7 @@ void BinaryTree::inOrderTraversal() {
     cout << endl;
 }
 
-// 后序遍历（递归）：左子树 → 右子树 → 根
+// 后序遍历
 void BinaryTree::postOrder(BTNode* node) {
     if (node != nullptr) {
         postOrder(node->left);
@@ -103,9 +83,8 @@ void BinaryTree::postOrderTraversal() {
     cout << endl;
 }
 
-// ==================== 统计与计算 ====================
-
-// 递归统计叶子节点数：左右子树均为空的节点为叶子
+// 统计与计算
+// 统计叶子节点数
 int BinaryTree::countLeaves(BTNode* node) {
     if (node == nullptr) {
         return 0;
@@ -120,7 +99,7 @@ int BinaryTree::leafCount() {
     return countLeaves(root);
 }
 
-// 递归计算树的深度：max(左深度, 右深度) + 1
+// 递归计算树的深度
 int BinaryTree::getDepth(BTNode* node) {
     if (node == nullptr) {
         return 0;
@@ -134,9 +113,8 @@ int BinaryTree::treeDepth() {
     return getDepth(root);
 }
 
-// ==================== 查找功能 ====================
-
-// 递归查找指定值的节点，返回节点指针（找不到返回 nullptr）
+// 查找
+// 指定值的节点
 BTNode* BinaryTree::findNode(BTNode* node, char val) {
     if (node == nullptr) {
         return nullptr;
@@ -151,7 +129,7 @@ BTNode* BinaryTree::findNode(BTNode* node, char val) {
     return findNode(node->right, val);
 }
 
-// 递归查找指定值节点的双亲节点
+// 查找指定值双亲
 BTNode* BinaryTree::findParent(BTNode* node, char val) {
     if (node == nullptr) {
         return nullptr;
@@ -167,8 +145,7 @@ BTNode* BinaryTree::findParent(BTNode* node, char val) {
     return findParent(node->right, val);
 }
 
-// 外部接口：查找值为 val 的节点的双亲值
-// 返回双亲的 data，若无双亲或根节点返回 '\0'
+// 查找双亲接口
 char BinaryTree::findParentValue(char val) {
     if (root == nullptr || root->data == val) {
         return '\0';
@@ -177,8 +154,7 @@ char BinaryTree::findParentValue(char val) {
     return parent != nullptr ? parent->data : '\0';
 }
 
-// 外部接口：查找值为 val 的节点的兄弟节点值
-// 先找到双亲，再返回双亲的另一个孩子
+// 找兄弟接口
 char BinaryTree::findSibling(char val) {
     if (root == nullptr || root->data == val) {
         return '\0';
@@ -193,17 +169,16 @@ char BinaryTree::findSibling(char val) {
     return parent->left != nullptr ? parent->left->data : '\0';
 }
 
-// ==================== HuffmanTree 类 ====================
-
-// 构造函数：初始化根节点为空
+// HuffmanTree
+// 构造函数
 HuffmanTree::HuffmanTree() : root(nullptr) {}
 
-// 析构函数：递归销毁整棵树
+// 析构函数
 HuffmanTree::~HuffmanTree() {
     destroy(root);
 }
 
-// 递归销毁 Huffman 子树
+// 递归销毁
 void HuffmanTree::destroy(HuffmanNode* node) {
     if (node != nullptr) {
         destroy(node->left);
@@ -217,19 +192,18 @@ void HuffmanTree::destroy(HuffmanNode* node) {
 // 2. 每次取出频率最小的两个节点，合并为新节点（频率=两子节点频率之和）
 // 3. 新节点入队，重复直到队列只剩一个节点，即为 Huffman 树的根
 void HuffmanTree::buildTree(const map<char, int>& frequencies) {
-    // 最小堆优先队列：按频率升序排列
     priority_queue<pair<int, HuffmanNode*>, vector<pair<int, HuffmanNode*>>, greater<pair<int, HuffmanNode*>>> pq;
 
-    // 步骤1：所有字符作为叶子节点入队
+    // 字符作为叶子节点入队
     for (const auto& pair : frequencies) {
         pq.push({ pair.second, new HuffmanNode(pair.first, pair.second) });
     }
 
-    // 步骤2-3：反复合并最小的两个节点
+    // 反复合并最小的两个节点
     while (pq.size() > 1) {
-        auto left = pq.top();
-        pq.pop();
         auto right = pq.top();
+        pq.pop();
+        auto left = pq.top();
         pq.pop();
 
         // 创建新内部节点，频率为两子节点之和
@@ -242,9 +216,7 @@ void HuffmanTree::buildTree(const map<char, int>& frequencies) {
     root = pq.top().second;
 }
 
-// 递归生成 Huffman 编码：
-// 从根节点出发，左分支追加 '0'，右分支追加 '1'
-// 到达叶子节点（data != '\0'）时记录编码
+// 递归生成 Huffman 编码
 void HuffmanTree::generateCodes(HuffmanNode* node, string code, map<char, string>& codes) {
     if (node == nullptr) {
         return;
